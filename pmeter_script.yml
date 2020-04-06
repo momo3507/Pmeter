@@ -1,0 +1,52 @@
+# This is Pmeter code mode
+TestPlan:   # 测试计划
+    proty-name: Pmeter测试计划  #TestPlan的name属性
+    ele-Variables:  # 用户定义的变量
+        username: momo
+        password: 1111
+    ele-HttpRequestDefaults: # http请求默认值
+        proty-Protocol: http
+        proty-ServerNameOrIp: 127.0.0.1
+        proty-Port: 5000
+    ele-HttpHeaderDefaults: # 请求头默认值
+        Content-Type: application/json
+        token: 1ytd234567qwert
+    ele-ThreadGroups:   # 线程组列表
+        -
+            proty-name: 登录线程组
+            proty-num: 5
+            ele-HttpSteps:  # http请求列表
+                -
+                    proty-name: 平台登录接口
+                    proty-Protocol: 
+                    proty-ServerNameOrIp: 
+                    proty-Port:
+                    proty-Method: POST
+                    proty-Path: /login
+                    proty-Params:
+                        t: ${__timeStamp()}
+                    proty-Body:
+                        username: ${username}
+                        password: ${password}
+                    ele-extract:    # 提取器
+                        ret: $.ret
+                        token: $.token
+                    ele-assert:     # 断言
+                        - eq:
+                              - status_code
+                              - 200
+                        - eq:
+                              - ${ret}
+                              - 0
+                -
+                    proty-name: 平台查询接口
+                    proty-Protocol:
+                    proty-ServerNameOrIp:
+                    proty-Port:
+                    proty-Method: GET
+                    proty-Path: /query
+                    proty-Params:
+                        name: ${username}
+                    proty-Body:
+                    proty-Headers:
+                        token: ${token}
